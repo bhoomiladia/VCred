@@ -25,7 +25,7 @@ const VerificationBadge = ({ cred }: { cred: any }) => {
 
   if (cred.isClaimed) {
     return (
-      <div className="flex items-center gap-1 text-sm text-emerald-500 font-medium bg-emerald-500/10 px-2 py-1 rounded-md">
+      <div className="flex items-center gap-1 text-sm text-purple-500 font-medium bg-purple-500/10 px-2 py-1 rounded-md">
         <CheckCircle2 className="h-4 w-4" />
         Soulbound on Ethereum
       </div>
@@ -242,7 +242,7 @@ export default function StudentDashboardPage() {
                     <div className="flex flex-col md:flex-row gap-2 w-full">
                       {cred.isClaimed ? (
                         <div className="flex flex-col gap-1 w-full md:w-auto">
-                          <Button size="sm" variant="secondary" className="w-full text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 shadow-none border border-emerald-500/20" disabled>
+                          <Button size="sm" variant="secondary" className="w-full text-purple-500 bg-purple-500/10 hover:bg-purple-500/20 shadow-none border border-purple-500/20" disabled>
                             <CheckCircle2 className="h-4 w-4 mr-2" />
                             Claimed to Wallet
                           </Button>
@@ -356,3 +356,4 @@ export default function StudentDashboardPage() {
     </>
   )
 }
+

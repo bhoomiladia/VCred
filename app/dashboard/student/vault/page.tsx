@@ -111,7 +111,7 @@ export default function VaultPage() {
                       <p className="text-lg font-semibold">{cred.degreeTitle}</p>
                       <p className="text-sm text-muted-foreground">{cred.branch}</p>
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className={cred.revoked ? "bg-red-500/10 text-red-500 border-red-500/20" : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"}>
+                          <Badge variant="outline" className={cred.revoked ? "bg-red-500/10 text-red-500 border-red-500/20" : "bg-purple-500/10 text-purple-500 border-purple-500/20"}>
                             {cred.revoked ? "Revoked" : "Verified on Hub-Engine"}
                           </Badge>
                           <span className="text-[10px] text-muted-foreground font-mono">ID: {cred.batchId}</span>
@@ -126,7 +126,7 @@ export default function VaultPage() {
                     <div>
                       <code className="font-mono text-xs text-muted-foreground">{cred.rollNumber}</code>
                       <div className="flex items-center gap-2">
-                          <Badge variant="outline" className={cred.revoked ? "bg-red-500/10 text-red-500 border-red-500/20" : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"}>
+                          <Badge variant="outline" className={cred.revoked ? "bg-red-500/10 text-red-500 border-red-500/20" : "bg-purple-500/10 text-purple-500 border-purple-500/20"}>
                             {cred.revoked ? "Revoked" : "Verified Record"}
                           </Badge>
                           <span className="text-[10px] text-muted-foreground">{new Date(cred.issuedAt).toLocaleDateString()}</span>
@@ -275,3 +275,4 @@ export default function VaultPage() {
     </>
   )
 }
+

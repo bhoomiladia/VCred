@@ -1,0 +1,40 @@
+export function VCubeLogo({ className = "w-6 h-6" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      {/* Cube Background/Shadow */}
+      <path d="M50 48 L80 65 L50 85 L20 65 Z" fill="#1e1b4b" />
+      
+      {/* Cube Edges with Glow (White outlines) */}
+      <path d="M50 48 L80 65 L50 82 L20 65 Z" fill="url(#cubeTop)" stroke="#e2e8f0" strokeWidth="1" />
+      <path d="M20 65 L50 82 L50 98 L20 81 Z" fill="url(#cubeLeft)" stroke="#e2e8f0" strokeWidth="1" />
+      <path d="M80 65 L50 82 L50 98 L80 81 Z" fill="url(#cubeRight)" stroke="#e2e8f0" strokeWidth="1" />
+      
+      {/* The floating V Shape */}
+      <path d="M2 32 L50 58 L98 32 L86 20 L50 40 L14 20 Z" fill="url(#vGrad)" filter="drop-shadow(0 15px 10px rgba(88,28,135,0.7))" />
+      
+      <defs>
+        <linearGradient id="cubeTop" x1="50" y1="48" x2="50" y2="82">
+          <stop stopColor="#3b0764" />
+          <stop offset="1" stopColor="#170229" />
+        </linearGradient>
+        <linearGradient id="cubeLeft" x1="20" y1="65" x2="50" y2="98">
+          <stop stopColor="#7e22ce" />
+          <stop offset="1" stopColor="#4c1d95" />
+        </linearGradient>
+        <linearGradient id="cubeRight" x1="80" y1="65" x2="50" y2="98">
+          <stop stopColor="#d8b4fe" />
+          <stop offset="1" stopColor="#7e22ce" />
+        </linearGradient>
+        {/* Metallic Purple/Silver gradient for the V */}
+        <linearGradient id="vGrad" x1="0" y1="20" x2="100" y2="58" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#ffffff" />
+          <stop offset="0.2" stopColor="#e2e8f0" />
+          <stop offset="0.45" stopColor="#c084fc" />
+          <stop offset="0.55" stopColor="#9333ea" />
+          <stop offset="0.8" stopColor="#f8fafc" />
+          <stop offset="1" stopColor="#7e22ce" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}

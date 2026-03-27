@@ -202,7 +202,7 @@ export default function StudentOnboarding() {
           <div className={`transition-all duration-500 ${step === 2 ? 'opacity-100 translate-x-0 relative' : 'opacity-0 translate-x-full absolute inset-0 pointer-events-none'}`}>
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-500 mb-4">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/20 text-purple-500 mb-4">
                   <CheckCircle2 className="h-6 w-6" />
                 </div>
                 <h3 className="text-lg font-medium">Check your email</h3>
@@ -251,3 +251,4 @@ export default function StudentOnboarding() {
     </div>
   )
 }
+

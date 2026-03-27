@@ -12,6 +12,8 @@ import Link from "next/link"
 import jsQR from "jsqr"
 import { Html5QrcodeScanner } from "html5-qrcode"
 import { QrCode, Scan, Camera, FileUp } from "lucide-react"
+import { VCubeLogo } from "@/components/v-cube-logo"
+import { AnimatedVCred } from "@/components/animated-vcred"
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type VerifyMode = "single" | "batch"
@@ -436,11 +438,9 @@ export default function VerifyPage() {
               <span className="text-sm">Back</span>
             </Link>
             <div className="h-6 w-px bg-border" />
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <Shield className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-semibold">VCRED</span>
+            <Link href="/" className="flex items-center gap-3">
+              <VCubeLogo className="h-8 w-8 drop-shadow-md" />
+              <AnimatedVCred className="text-xl font-black tracking-tighter uppercase italic text-foreground" />
             </Link>
           </div>
           <div className="flex items-center gap-2">

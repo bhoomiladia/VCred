@@ -6,6 +6,8 @@ import { Shield, CheckCircle2, Search, ArrowRight, GraduationCap, Building2, Zap
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { VerificationModal } from "@/components/verification-modal"
+import { AnimatedVCred } from "@/components/animated-vcred"
+import { VCubeLogo } from "@/components/v-cube-logo"
 import { useUser } from "@/lib/user-context"
 // Assuming the component was added here. Adjust the path if shadcn placed it elsewhere (e.g., "@/components/ui/silk")
 import Silk from "@/components/Silk"
@@ -70,105 +72,120 @@ function CertificateHero() {
   const certOpacity = useTransform(scrollYProgress, [0.85, 1], [1, 0])
 
   // Stamp Animation: Scales down, fades in, and rotates into place for a realistic hit
-  const stampOpacity = useTransform(scrollYProgress, [0.12, 0.2], [0, 0.9])
-  const stampScale = useTransform(scrollYProgress, [0.12, 0.22], [3, 1])
-  const stampRotate = useTransform(scrollYProgress, [0.12, 0.22], [-35, -12])
+  const stampOpacity = useTransform(scrollYProgress, [0.05, 0.25], [0, 0.95])
+  const stampScale = useTransform(scrollYProgress, [0.05, 0.25], [4, 1])
+  const stampRotate = useTransform(scrollYProgress, [0.05, 0.25], [-45, -12])
 
-  const textY = useTransform(scrollYProgress, [0, 0.3], [0, -20])
-  const detailsOpacity = useTransform(scrollYProgress, [0.35, 0.5], [0, 1])
+  const textY = useTransform(scrollYProgress, [0, 0.25], [0, -20])
+  const detailsOpacity = useTransform(scrollYProgress, [0.25, 0.4], [0, 1])
 
   return (
-    <div ref={containerRef} className="relative h-[200vh] w-full pt-32">
+    <div ref={containerRef} className="relative h-[250vh] w-full pt-32">
       <div className="sticky top-10 flex flex-col items-center justify-center overflow-hidden px-4 py-20 min-h-screen">
 
         <motion.div
           style={{ y: certY, scale: certScale, opacity: certOpacity }}
-          className="relative w-full max-w-6xl aspect-[1.4/1] bg-zinc-950/20 rounded-3xl border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)] p-16 md:p-24 flex flex-col items-center justify-between text-center overflow-hidden z-10 backdrop-blur-2xl group"
+          className="relative w-full max-w-[1400px] aspect-[1.3/1] bg-[#1a1c29]/95 rounded-sm border-[12px] border-[#0f111a] shadow-[0_0_100px_rgba(0,0,0,0.8)] p-16 md:p-24 flex flex-col items-center justify-between text-center overflow-hidden z-10 backdrop-blur-2xl group"
         >
-          {/* Subtle Background Elements - Reduced opacities for better transparency */}
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent pointer-events-none opacity-50" />
-          <div className="absolute inset-6 border border-white/5 rounded-2xl pointer-events-none" />
+          {/* Detailed Golden Certificate Borders */}
+          <div className="absolute inset-0 pointer-events-none z-0">
+            {/* Dark inner background with intricate pattern (simulated with radial gradient) */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#2a2c42_0%,_#141522_100%)] opacity-80" />
+
+            {/* Outer Silver Border */}
+            <div className="absolute inset-4 border-[3px] border-slate-400/80 rounded-sm" />
+            {/* Middle Thin Silver Border */}
+            <div className="absolute inset-6 border border-slate-300/50 rounded-sm" />
+            {/* Inner Silver Border with Corner Flourishes */}
+            <div className="absolute inset-[3.5rem] border border-slate-500/30" />
+
+            {/* Corner Decorative Elements */}
+            <div className="absolute top-[3.5rem] left-[3.5rem] w-8 h-8 border-t-[3px] border-l-[3px] border-slate-400/80 rounded-tl-xl" />
+            <div className="absolute top-[3.5rem] right-[3.5rem] w-8 h-8 border-t-[3px] border-r-[3px] border-slate-400/80 rounded-tr-xl" />
+            <div className="absolute bottom-[3.5rem] left-[3.5rem] w-8 h-8 border-b-[3px] border-l-[3px] border-slate-400/80 rounded-bl-xl" />
+            <div className="absolute bottom-[3.5rem] right-[3.5rem] w-8 h-8 border-b-[3px] border-r-[3px] border-slate-400/80 rounded-br-xl" />
+          </div>
 
           {/* Large Faint Watermark Logo */}
           <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none translate-y-4">
-            <Shield className="w-[700px] h-[700px] text-emerald-400" />
+            <VCubeLogo className="w-[600px] h-[600px] opacity-30 grayscale blur-[2px]" />
           </div>
 
-          <div className="relative z-10 w-full space-y-12 transition-all duration-700">
+          <div className="relative z-10 w-full space-y-12 transition-all duration-700 mt-4">
             <div className="flex flex-col items-center space-y-6">
               <div className="relative group/icon">
-                <div className="absolute inset-0 blur-3xl bg-emerald-500/20 group-hover/icon:bg-emerald-500/30 transition-colors" />
-                <Shield className="w-20 h-20 text-emerald-400 relative z-10 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+                <div className="absolute inset-0 blur-3xl bg-slate-400/20 group-hover/icon:bg-slate-400/30 transition-colors" />
+                <VCubeLogo className="w-24 h-24 relative z-10 drop-shadow-[0_0_15px_rgba(148,163,184,0.3)]" />
               </div>
-              <h2 className="text-[10px] md:text-sm font-black tracking-[0.6em] text-emerald-400 uppercase italic">VCRED Decentralized Registry</h2>
+              <h2 className="text-[10px] md:text-sm font-black tracking-[0.6em] text-slate-400 uppercase italic">VCRED Decentralized Registry</h2>
             </div>
 
-            <motion.div style={{ y: textY }} className="space-y-8">
-              <p className="text-zinc-500 italic font-serif text-xl md:text-2xl">Authenticated Proof of Digital Integrity</p>
-              <h1 className="text-6xl md:text-9xl font-black tracking-tighter text-white uppercase italic leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-zinc-600">
+            <motion.div style={{ y: textY }} className="space-y-6">
+              <p className="text-slate-300/60 italic font-serif text-xl md:text-2xl tracking-wide">Certificate of Appreciation</p>
+              <h1 className="text-6xl md:text-9xl font-black tracking-tighter uppercase italic leading-none bg-clip-text text-transparent bg-gradient-to-b from-slate-100 via-slate-300 to-slate-500 drop-shadow-lg" style={{ fontFamily: "Georgia, serif" }}>
                 Absolute Truth
               </h1>
-              <div className="h-1 w-48 bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent mx-auto rounded-full" />
-              <p className="text-zinc-500 italic font-serif max-w-3xl mx-auto leading-relaxed text-sm md:text-xl px-8 opacity-80">
-                This certificate witnesses that the associated metadata has been successfully anchored to the 
+              <div className="h-1 w-48 bg-gradient-to-r from-transparent via-slate-400/40 to-transparent mx-auto rounded-full mt-8" />
+              <p className="text-slate-200/60 italic font-serif max-w-3xl mx-auto leading-relaxed text-sm md:text-xl px-8 opacity-80 mt-8">
+                This certificate witnesses that the associated metadata has been successfully anchored to the
                 blockchain, verified by the Merkle Genesis Protocol B16.
               </p>
             </motion.div>
 
-            <div className="pt-16 flex justify-between items-end px-10 md:px-20">
+            <div className="w-full flex justify-between items-end px-16 md:px-28 relative z-10 mt-auto pt-6 pb-12 md:pb-16">
               <div className="text-left space-y-3">
-                <p className="text-[10px] text-zinc-600 uppercase font-black tracking-[0.3em]">Network Authority</p>
-                <div className="w-40 h-px bg-zinc-800" />
-                <p className="text-sm md:text-lg font-black text-zinc-400 italic tracking-tight">ACCRED MAINNET v3.0</p>
+                <p className="text-[10px] md:text-xs text-slate-400/70 uppercase font-black tracking-[0.3em] drop-shadow-md">Network Authority</p>
+                <div className="w-32 md:w-48 h-[2px] bg-slate-400/50" />
+                <p className="text-sm md:text-xl font-black text-slate-200/90 italic tracking-tight drop-shadow-md">ACCRED MAINNET v3.0</p>
               </div>
               <div className="text-right space-y-3">
-                <p className="text-[10px] text-zinc-600 uppercase font-black tracking-[0.3em]">Registry Identity</p>
-                <div className="w-40 h-px bg-zinc-800" />
-                <p className="text-[10px] font-mono text-emerald-500/50 uppercase tracking-tighter">BLOCK_CHAIN_ROOT_0xAE45</p>
+                <p className="text-[10px] md:text-xs text-slate-400/70 uppercase font-black tracking-[0.3em] drop-shadow-md">Registry Identity</p>
+                <div className="w-32 md:w-48 h-[2px] bg-slate-400/50 ml-auto" />
+                <p className="text-[10px] md:text-sm font-mono text-slate-400/80 uppercase tracking-tighter drop-shadow-md">BLOCK_CHAIN_ROOT_0xAE45</p>
               </div>
             </div>
           </div>
 
           <motion.div
             style={{
+              x: "-50%",
               opacity: stampOpacity,
               scale: stampScale,
               rotate: stampRotate
             }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none"
+            className="absolute bottom-20 md:bottom-28 left-1/2 z-[60] pointer-events-none"
           >
-            {/* Realistic Tilted Stamp */}
-            <div className="relative px-10 py-5 border-[6px] border-blue-600/80 rounded-lg text-blue-500 font-black text-5xl md:text-7xl tracking-tighter uppercase mix-blend-screen shadow-[inset_0_0_20px_rgba(59,130,246,0.2)]">
-              <span className="opacity-90">Verified</span>
-              {/* Subtle texture overlay for realism */}
-              <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
+            {/* Green Tilted Stamp with Glass Effect */}
+            <div className="relative px-8 py-4 md:px-10 md:py-5 border-[6px] md:border-[8px] border-emerald-500/90 rounded-2xl text-emerald-500 font-black text-5xl md:text-7xl tracking-tighter uppercase shadow-[0_0_40px_rgba(16,185,129,0.3),inset_0_0_30px_rgba(16,185,129,0.3)] bg-emerald-500/10 backdrop-blur-[2px]">
+              <span className="opacity-100 drop-shadow-[0_2px_15px_rgba(16,185,129,0.6)]">VERIFIED</span>
+              <div className="absolute inset-0 opacity-30 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
             </div>
           </motion.div>
         </motion.div>
 
         <motion.div
           style={{ opacity: detailsOpacity }}
-          className="mt-20 text-center space-y-6 max-w-3xl px-8 relative z-10"
+          className="mt-8 text-center space-y-8 max-w-5xl px-8 relative z-10"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-xs font-semibold uppercase tracking-wider">
-            <CheckCircle2 className="w-4 h-4" />
+          <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/10 border border-white/20 text-white text-sm font-semibold uppercase tracking-wider shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+            <CheckCircle2 className="w-5 h-5" />
             Zero-Knowledge Consensus Active
           </div>
-          <h3 className="text-3xl md:text-4xl font-bold tracking-tight text-white leading-tight">
+          <h3 className="text-5xl md:text-7xl font-bold tracking-tight text-white leading-tight">
             Integrity is now automated.
           </h3>
-          <p className="text-zinc-400 leading-relaxed text-lg md:text-xl">
+          <p className="text-zinc-300 font-medium leading-relaxed text-2xl md:text-3xl lg:px-12">
             VCRED secures academic achievements with cryptographic precision,
             transforming standard credentials into immutable digital assets.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10">
             <Link href="/role-select">
-              <Button size="lg" className="rounded-full px-8 h-14 text-base font-semibold bg-blue-600 hover:bg-blue-500 transition-colors">
+              <Button size="lg" className="rounded-full px-12 h-16 text-xl font-bold text-black bg-slate-200 hover:bg-white transition-colors shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)]">
                 Join Network
               </Button>
             </Link>
             <Link href="/verify">
-              <Button variant="outline" size="lg" className="rounded-full px-8 h-14 text-base font-semibold bg-zinc-900/50 border-white/20 hover:bg-zinc-800 text-white transition-colors backdrop-blur-md">
+              <Button variant="outline" size="lg" className="rounded-full px-12 h-16 text-xl font-bold bg-zinc-900/50 border-white/20 hover:bg-zinc-800 text-white transition-colors backdrop-blur-md">
                 Verify Credential
               </Button>
             </Link>
@@ -202,7 +219,7 @@ export default function LandingPage() {
 
       {/* Background Silk Canvas - Positioned at bottom layer */}
       <div className="fixed inset-0 z-0 opacity-40 mix-blend-screen pointer-events-none">
-        <Silk color="#1c0f28ff" />
+        <Silk color="#33045fff" />
       </div>
 
       {/* Subtle Ambient Background Gradient to blend with Silk */}
@@ -214,10 +231,10 @@ export default function LandingPage() {
       <header className="fixed top-0 left-0 right-0 z-[100] border-b border-white/5 bg-transparent backdrop-blur-md">
         <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-8">
           <Link href="/" className="flex items-center gap-4 group">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 group-hover:bg-emerald-500 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-              <Shield className="h-6 w-6 text-white" />
+            <div className="flex items-center justify-center transition-transform group-hover:scale-110 drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+              <VCubeLogo className="h-10 w-10" />
             </div>
-            <span className="text-2xl font-black tracking-tighter text-white uppercase italic">VCRED</span>
+            <AnimatedVCred className="text-2xl font-black tracking-tighter text-white uppercase italic" />
           </Link>
 
           <nav className="hidden items-center gap-12 md:flex">
@@ -246,15 +263,15 @@ export default function LandingPage() {
           <CertificateHero />
         </section>
 
-        {/* Following Sections with semi-transparent backgrounds to let the Silk peek through slightly */}
-        <div className="relative border-t border-white/5 bg-zinc-950/90 backdrop-blur-3xl">
+        {/* Following Sections with transparent backgrounds to let the Silk canvas flow continuously */}
+        <div className="relative border-t border-white/5 bg-transparent">
           {/* Feature Cards Grid */}
           <section className="relative mx-auto max-w-7xl px-8 py-32 md:py-48">
             <div className="text-center mb-24">
               <h2 className="text-5xl font-black tracking-tighter text-white mb-6 uppercase italic">Protocol Features</h2>
               <div className="h-1.5 w-24 bg-emerald-600 mx-auto rounded-full" />
             </div>
-            
+
             <div className="grid gap-8 md:grid-cols-3">
               {[
                 {
@@ -292,7 +309,7 @@ export default function LandingPage() {
           </section>
 
           {/* Paths Section */}
-          <section className="relative py-32 bg-zinc-950/50 border-t border-white/5 overflow-hidden">
+          <section className="relative py-32 bg-transparent border-t border-white/5 overflow-hidden">
             <div className="mx-auto max-w-7xl px-8">
               <div className="text-center mb-20">
                 <h2 className="text-5xl font-black tracking-tighter text-white mb-6 uppercase italic">Identity Nodes</h2>
@@ -330,7 +347,7 @@ export default function LandingPage() {
           </section>
 
           {/* Stats Bar */}
-          <section className="py-24 border-y border-white/5 bg-black">
+          <section className="py-24 border-y border-white/10 bg-black/30">
             <div className="mx-auto max-w-7xl px-8">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                 {[
@@ -353,11 +370,11 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="py-24 bg-black relative z-20">
+      <footer className="py-24 bg-black/40 relative z-20 border-t border-white/5">
         <div className="mx-auto max-w-7xl px-8 flex flex-col md:flex-row justify-between items-center gap-10">
           <div className="flex items-center gap-4">
-            <Shield className="h-10 w-10 text-emerald-600" />
-            <span className="text-3xl font-black tracking-tighter text-white uppercase italic">VCRED</span>
+            <VCubeLogo className="h-10 w-10 drop-shadow-[0_0_10px_rgba(139,92,246,0.5)]" />
+            <AnimatedVCred className="text-3xl font-black tracking-tighter text-white uppercase italic" />
           </div>
           <p className="text-zinc-600 text-sm font-medium tracking-tight">Decentralized Trust Network © 2026. All proofs recorded on-chain via Merkle Genesis.</p>
         </div>

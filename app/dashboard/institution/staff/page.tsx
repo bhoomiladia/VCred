@@ -161,7 +161,7 @@ export default function StaffManagement() {
                     <td className="px-6 py-4">
                       <span className={cn(
                         "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium border",
-                        worker.workerStatus === 'VERIFIED' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
+                        worker.workerStatus === 'VERIFIED' ? "bg-purple-500/10 text-purple-500 border-purple-500/20" :
                         worker.workerStatus === 'REJECTED' ? "bg-red-500/10 text-red-500 border-red-500/20" :
                         "bg-amber-500/10 text-amber-500 border-amber-500/20"
                       )}>
@@ -185,7 +185,7 @@ export default function StaffManagement() {
                           </Button>
                           <Button 
                             size="sm" 
-                            className="h-8 bg-emerald-600 hover:bg-emerald-700 text-white"
+                            className="h-8 bg-purple-600 hover:bg-purple-700 text-white"
                             onClick={() => handleUpdateStatus(worker._id, 'VERIFIED')}
                             disabled={updatingId === worker._id}
                           >
@@ -246,3 +246,4 @@ export default function StaffManagement() {
     </div>
   )
 }
+

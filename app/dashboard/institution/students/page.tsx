@@ -250,7 +250,7 @@ export default function StudentRecordsPage() {
           </div>
           <div className="rounded-xl border border-border/50 bg-card/50 p-4">
             <p className="text-sm text-muted-foreground">Active Credentials</p>
-            <p className="text-2xl font-bold text-emerald-500">{activeCount}</p>
+            <p className="text-2xl font-bold text-purple-500">{activeCount}</p>
           </div>
           <div className="rounded-xl border border-border/50 bg-card/50 p-4">
             <p className="text-sm text-muted-foreground">Revoked</p>
@@ -371,6 +371,7 @@ export default function StudentRecordsPage() {
             <Button variant="outline" size="sm" className="gap-2" onClick={exportToCSV}>
               <Download className="h-4 w-4" /> CSV
             </Button>
+
             <Button variant="ghost" size="sm" onClick={() => fetchRecords()}>
               <RefreshCw className="h-4 w-4" />
             </Button>
@@ -422,7 +423,7 @@ export default function StudentRecordsPage() {
                         <p className="text-xs text-muted-foreground">{new Date(record.issuedAt).toLocaleDateString()}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`text-sm font-bold font-mono ${record.cgpa >= 8.5 ? 'text-emerald-500' : record.cgpa >= 7 ? 'text-primary' : 'text-amber-500'}`}>
+                        <span className={`text-sm font-bold font-mono ${record.cgpa >= 8.5 ? 'text-purple-500' : record.cgpa >= 7 ? 'text-primary' : 'text-amber-500'}`}>
                           {record.cgpa}
                         </span>
                       </td>
@@ -446,7 +447,7 @@ export default function StudentRecordsPage() {
                             variant="outline" 
                             className={record.revoked
                               ? "bg-destructive/10 text-destructive border-destructive/20" 
-                              : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                              : "bg-purple-500/10 text-purple-500 border-purple-500/20"
                             }
                           >
                             {record.revoked ? "Revoked" : "Active"}
@@ -461,7 +462,7 @@ export default function StudentRecordsPage() {
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                className={record.revoked ? "text-emerald-500 hover:text-emerald-600" : "text-destructive hover:text-destructive/80"}
+                                className={record.revoked ? "text-purple-500 hover:text-purple-600" : "text-destructive hover:text-destructive/80"}
                                 disabled={revoking === record.credentialHash}
                                 onClick={() => handleRevoke(record)}
                                 title={record.revoked ? "Reactivate" : "Revoke"}
@@ -493,7 +494,7 @@ export default function StudentRecordsPage() {
                               
                               <Link href={`/verify/${record.credentialHash}`} target="_blank">
                                 <Button size="sm" variant="ghost" title="Verify on Blockchain">
-                                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                                  <CheckCircle2 className="h-4 w-4 text-purple-500" />
                                 </Button>
                               </Link>
                             </>
@@ -570,3 +571,4 @@ export default function StudentRecordsPage() {
     </>
   )
 }
+

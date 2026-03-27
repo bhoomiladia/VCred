@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { CertificatePreview } from "@/components/CertificatePreview"
 import { useSearchParams } from "next/navigation"
+import { VCubeLogo } from "@/components/v-cube-logo"
+import { AnimatedVCred } from "@/components/animated-vcred"
 
 // Next.js 15: params is a Promise, must be unwrapped with React.use()
 export default function VerifyPage({ params }: { params: Promise<{ hash: string }> }) {
@@ -118,9 +120,9 @@ const VerificationResult = ({ credential }: { credential: any }) => {
 
       {/* Header */}
       <header className="p-6 border-b border-zinc-900/80 flex justify-between items-center sticky top-0 bg-black/80 backdrop-blur-md z-50">
-        <div className="flex items-center gap-2">
-          <Building2 className="h-6 w-6 text-emerald-500" />
-          <span className="font-bold tracking-widest text-lg">VCRED</span>
+        <div className="flex items-center gap-3">
+          <VCubeLogo className="h-6 w-6 drop-shadow-md" />
+          <AnimatedVCred className="text-xl font-black tracking-tighter uppercase italic" />
         </div>
         <div className="flex gap-4">
            <Button 

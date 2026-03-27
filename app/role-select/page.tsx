@@ -4,6 +4,8 @@ import { motion } from "framer-motion"
 import { GraduationCap, Building2, Shield, ArrowRight, ArrowLeft, Users, FileCheck, Wallet, Lock, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { VCubeLogo } from "@/components/v-cube-logo"
+import { AnimatedVCred } from "@/components/animated-vcred"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useState, useEffect, Suspense, useCallback } from "react"
 import { useAccount } from "wagmi"
@@ -184,11 +186,9 @@ function RoleSelectContent() {
               <span className="text-sm">Back</span>
             </Link>
             <div className="h-6 w-px bg-border" />
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <Shield className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-semibold">VCRED</span>
+            <Link href="/" className="flex items-center gap-3">
+              <VCubeLogo className="h-8 w-8 drop-shadow-md" />
+              <AnimatedVCred className="text-xl font-black tracking-tighter uppercase italic text-foreground" />
             </Link>
           </div>
 

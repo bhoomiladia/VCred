@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import jsQR from "jsqr"
+import { VCubeLogo } from "@/components/v-cube-logo"
+import { AnimatedVCred } from "@/components/animated-vcred"
 
 export default function VerifyCertPage() {
   const [file, setFile] = useState<File | null>(null)
@@ -129,9 +131,10 @@ export default function VerifyCertPage() {
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div className="h-4 w-[1px] bg-zinc-800" />
-            <div className="flex items-center gap-2">
-              <Shield className="h-6 w-6 text-emerald-500" />
-              <span className="font-bold tracking-widest text-lg">VCRED COMPARE</span>
+            <div className="flex items-center gap-3">
+              <VCubeLogo className="h-6 w-6" />
+              <AnimatedVCred className="text-xl font-black tracking-tighter uppercase italic" />
+              <span className="font-bold tracking-widest text-sm text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-md ml-2">COMPARE</span>
             </div>
           </div>
         </div>

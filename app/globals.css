@@ -8,7 +8,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ACCRED Theme - Zinc-950 base with Emerald-500 accents */
+/* ACCRED Theme - Zinc-950 base with purple-500 accents */
 :root {
   --background: oklch(0.09 0.005 285);
   --foreground: oklch(0.985 0 0);

@@ -274,12 +274,12 @@ export default function BulkUploadPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="border rounded-xl p-4 bg-emerald-500/5 border-emerald-500/20">
+              <div className="border rounded-xl p-4 bg-purple-500/5 border-purple-500/20">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-emerald-500 flex items-center gap-2">
+                  <span className="font-medium text-purple-500 flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4" /> Ready for Issuance
                   </span>
-                  <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500">{validCount}</Badge>
+                  <Badge variant="outline" className="bg-purple-500/10 text-purple-500">{validCount}</Badge>
                 </div>
                 <p className="text-xs text-muted-foreground">Students meeting the 6.0 CGPA requirement.</p>
               </div>
@@ -325,7 +325,7 @@ export default function BulkUploadPage() {
                         ${row._status === 'missing_fields' ? 'bg-destructive/5 text-destructive/90' : ''}
                       `}>
                         <td className="px-6 py-3">
-                          {row._status === 'valid' && <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">Valid</Badge>}
+                          {row._status === 'valid' && <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/20">Valid</Badge>}
                           {row._status === 'invalid_cgpa' && <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">Low CGPA</Badge>}
                           {row._status === 'missing_fields' && <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20">Missing Data</Badge>}
                         </td>
@@ -367,3 +367,4 @@ export default function BulkUploadPage() {
     </>
   )
 }
+

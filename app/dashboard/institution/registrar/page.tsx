@@ -269,7 +269,7 @@ export default function RegistrarPage() {
             <div key={s.id} className="flex items-center gap-2 flex-1">
               <div className={`
                 flex items-center justify-center h-9 w-9 rounded-full text-sm font-bold transition-all
-                ${i < stepIndex ? "bg-emerald-500 text-white" : ""}
+                ${i < stepIndex ? "bg-purple-500 text-white" : ""}
                 ${i === stepIndex ? "bg-primary text-white ring-4 ring-primary/20" : ""}
                 ${i > stepIndex ? "bg-muted text-muted-foreground" : ""}
               `}>
@@ -279,7 +279,7 @@ export default function RegistrarPage() {
                 {s.label}
               </span>
               {i < STEPS.length - 1 && (
-                <div className={`flex-1 h-0.5 mx-2 rounded ${i < stepIndex ? "bg-emerald-500" : "bg-border"}`} />
+                <div className={`flex-1 h-0.5 mx-2 rounded ${i < stepIndex ? "bg-purple-500" : "bg-border"}`} />
               )}
             </div>
           ))}
@@ -407,12 +407,12 @@ export default function RegistrarPage() {
 
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="border rounded-xl p-4 bg-emerald-500/5 border-emerald-500/20">
+              <div className="border rounded-xl p-4 bg-purple-500/5 border-purple-500/20">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-emerald-500 flex items-center gap-2">
+                  <span className="font-medium text-purple-500 flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4" /> High Confidence
                   </span>
-                  <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500">{highConfCount}</Badge>
+                  <Badge variant="outline" className="bg-purple-500/10 text-purple-500">{highConfCount}</Badge>
                 </div>
                 <p className="text-xs text-muted-foreground">Successfully extracted with 80%+ confidence</p>
               </div>
@@ -463,7 +463,7 @@ export default function RegistrarPage() {
                         <td className="px-4 py-3">
                           {row.needsReview
                             ? <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">Review</Badge>
-                            : <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">OK</Badge>
+                            : <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/20">OK</Badge>
                           }
                         </td>
                         <td className="px-4 py-3 font-mono text-xs truncate max-w-[120px]">{row.filename}</td>
@@ -474,7 +474,7 @@ export default function RegistrarPage() {
                           <div className="flex items-center gap-2">
                             <div className="w-16 h-2 rounded-full bg-muted overflow-hidden">
                               <div
-                                className={`h-full rounded-full ${row.confidence >= 80 ? "bg-emerald-500" : row.confidence >= 60 ? "bg-amber-500" : "bg-destructive"}`}
+                                className={`h-full rounded-full ${row.confidence >= 80 ? "bg-purple-500" : row.confidence >= 60 ? "bg-amber-500" : "bg-destructive"}`}
                                 style={{ width: `${Math.min(row.confidence, 100)}%` }}
                               />
                             </div>
@@ -486,7 +486,7 @@ export default function RegistrarPage() {
                         </td>
                         <td className="px-4 py-3">
                           {row.dbMatch?.found
-                            ? <Badge variant="outline" className={`text-xs ${row.dbMatch.matchesName && row.dbMatch.matchesCgpa ? "bg-emerald-500/10 text-emerald-500" : "bg-amber-500/10 text-amber-500"}`}>
+                            ? <Badge variant="outline" className={`text-xs ${row.dbMatch.matchesName && row.dbMatch.matchesCgpa ? "bg-purple-500/10 text-purple-500" : "bg-amber-500/10 text-amber-500"}`}>
                                 {row.dbMatch.matchesName && row.dbMatch.matchesCgpa ? "✓ Match" : "⚠ Mismatch"}
                               </Badge>
                             : <span className="text-xs text-muted-foreground">Not found</span>
@@ -627,9 +627,9 @@ export default function RegistrarPage() {
         {/* ── STEP 5: Mint Complete ───────────────────────────────────── */}
         {step === "mint" && mintResult && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6">
-            <div className="bg-card border border-emerald-500/30 rounded-2xl p-8 text-center space-y-4">
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/10">
-                <CheckCircle2 className="h-10 w-10 text-emerald-500" />
+            <div className="bg-card border border-purple-500/30 rounded-2xl p-8 text-center space-y-4">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-purple-500/10">
+                <CheckCircle2 className="h-10 w-10 text-purple-500" />
               </div>
               <h2 className="text-2xl font-bold">Batch Minted Successfully!</h2>
               <p className="text-muted-foreground max-w-md mx-auto">
@@ -682,3 +682,4 @@ export default function RegistrarPage() {
     </>
   )
 }
+

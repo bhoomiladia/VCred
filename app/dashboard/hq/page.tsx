@@ -103,7 +103,7 @@ export default function HQDashboardPage() {
                     <div className="flex items-center gap-3">
                       <h3 className="text-xl font-bold">{inst.institutionName}</h3>
                       {inst.isGovtRegistered && (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-500 ring-1 ring-inset ring-emerald-500/20">
+                        <span className="inline-flex items-center gap-1 rounded-md bg-purple-500/10 px-2 py-1 text-xs font-medium text-purple-500 ring-1 ring-inset ring-purple-500/20">
                           Govt Registered
                         </span>
                       )}
@@ -142,7 +142,7 @@ export default function HQDashboardPage() {
                     Reject
                   </Button>
                   <Button 
-                    className="flex-1 md:flex-none gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20"
+                    className="flex-1 md:flex-none gap-2 bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-600/20"
                     onClick={() => handleVerification(inst._id, 'APPROVE')}
                   >
                     <CheckCircle2 className="h-4 w-4" />
@@ -157,3 +157,4 @@ export default function HQDashboardPage() {
     </>
   )
 }
+

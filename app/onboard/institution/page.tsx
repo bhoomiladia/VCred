@@ -173,13 +173,13 @@ export default function InstitutionOnboarding() {
   return (
     <div className="min-h-screen bg-background relative flex items-center justify-center p-6">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 right-1/4 h-96 w-96 rounded-full bg-emerald-500/10 blur-[100px]" />
+        <div className="absolute top-0 right-1/4 h-96 w-96 rounded-full bg-purple-500/10 blur-[100px]" />
         <div className="absolute bottom-0 left-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[100px]" />
       </div>
 
       <div className="w-full max-w-2xl relative z-10">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-500 border border-emerald-500/20">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-500/20 text-purple-500 border border-purple-500/20">
             <Building2 className="h-8 w-8" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Institution {institutionExists ? "Staff Join" : "Setup"}</h1>
@@ -211,7 +211,7 @@ export default function InstitutionOnboarding() {
                 )}
               </div>
               {institutionExists && (
-                <p className="text-xs text-emerald-500 font-medium flex items-center gap-1 mt-1">
+                <p className="text-xs text-purple-500 font-medium flex items-center gap-1 mt-1">
                   <ShieldCheck className="h-3 w-3" /> Institution found! You are joining as Staff.
                 </p>
               )}
@@ -295,11 +295,11 @@ export default function InstitutionOnboarding() {
                       type="checkbox" 
                       id="isGovtRegistered" 
                       {...register("isGovtRegistered")} 
-                      className="h-5 w-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600 bg-transparent"
+                      className="h-5 w-5 rounded border-gray-300 text-purple-600 focus:ring-purple-600 bg-transparent"
                     />
                     <div className="space-y-1 leading-none">
                       <label htmlFor="isGovtRegistered" className="text-sm w-full cursor-pointer font-medium leading-none flex items-center gap-2">
-                        Government Registered <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                        Government Registered <ShieldCheck className="w-4 h-4 text-purple-500" />
                       </label>
                     </div>
                   </div>
@@ -311,7 +311,7 @@ export default function InstitutionOnboarding() {
               <Link href="/role-select" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Cancel
               </Link>
-              <Button type="submit" size="lg" disabled={isSubmitting} className="w-full sm:w-auto gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button type="submit" size="lg" disabled={isSubmitting} className="w-full sm:w-auto gap-2 bg-purple-600 hover:bg-purple-700 text-white">
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -330,3 +330,4 @@ export default function InstitutionOnboarding() {
     </div>
   )
 }
+

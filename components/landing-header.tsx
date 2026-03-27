@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { AnimatedVCred } from "@/components/animated-vcred"
 import { Button } from "@/components/ui/button"
 import { Shield, Menu, X } from "lucide-react"
 import { useState } from "react"
@@ -15,7 +16,7 @@ export function LandingHeader() {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
             <Shield className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold text-foreground">VCRED</span>
+          <AnimatedVCred className="text-xl font-bold text-foreground" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

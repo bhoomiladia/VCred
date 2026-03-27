@@ -25,6 +25,8 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet"
+import { VCubeLogo } from "@/components/v-cube-logo"
+import { AnimatedVCred } from "@/components/animated-vcred"
 
 interface SidebarProps {
   role: "hq" | "institution" | "student"
@@ -201,11 +203,9 @@ export function DashboardSidebar({
   )
 
   const LogoHeader = () => (
-    <div className="flex shrink-0 h-16 items-center gap-2 border-b border-border/50 px-6">
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-        <Shield className="h-4 w-4 text-primary-foreground" />
-      </div>
-      <span className="font-semibold">VCRED</span>
+    <div className="flex shrink-0 h-16 items-center gap-3 border-b border-border/50 px-6">
+      <VCubeLogo className="h-8 w-8 drop-shadow-md" />
+      <AnimatedVCred className="text-xl font-black tracking-tighter uppercase italic text-foreground" />
       <span className="ml-auto rounded-md bg-primary/10 px-2 py-0.5 text-xs text-primary capitalize">
         {role}
       </span>

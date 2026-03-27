@@ -9,6 +9,7 @@
  */
 
 import Link from 'next/link';
+import { AnimatedVCred } from '@/components/animated-vcred';
 import { Shield, ExternalLink, LogOut, User } from 'lucide-react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { usePrivy } from '@privy-io/react-auth';
@@ -39,9 +40,7 @@ export function Web3Navbar() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 shadow-lg shadow-violet-900/40 transition-transform group-hover:scale-105">
             <Shield className="h-5 w-5 text-white" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-white">
-            VCRED
-          </span>
+          <AnimatedVCred className="text-xl font-bold tracking-tight text-white" />
         </Link>
 
         {/* ── Nav Links ─────────────────────────────────────── */}

@@ -353,7 +353,7 @@ export default function InstitutionDashboardPage() {
                     <div className="flex items-center gap-2">
                        <span className={cn(
                         "text-[10px] font-bold px-2 py-0.5 rounded-full border",
-                        cred.status === 'VERIFIED' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
+                        cred.status === 'VERIFIED' ? 'bg-purple-500/10 text-purple-500 border-purple-500/20' :
                         cred.status === 'MINTED' ? 'bg-primary/10 text-primary border-primary/20' :
                         'bg-amber-500/10 text-amber-500 border-amber-500/20'
                        )}>
@@ -465,7 +465,7 @@ export default function InstitutionDashboardPage() {
                         </div>
                       </div>
                       {isPublished ? (
-                        <div className="flex items-center gap-2 text-emerald-500 text-sm font-medium bg-emerald-500/10 px-4 py-2 rounded-lg">
+                        <div className="flex items-center gap-2 text-purple-500 text-sm font-medium bg-purple-500/10 px-4 py-2 rounded-lg">
                           <CheckCircle2 className="h-4 w-4" />
                           Published on Ethereum
                         </div>
@@ -496,3 +496,4 @@ export default function InstitutionDashboardPage() {
     </>
   )
 }
+
