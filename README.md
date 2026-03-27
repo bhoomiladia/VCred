@@ -96,8 +96,8 @@ sequenceDiagram
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/upo2201/Accred_proj.git
-   cd Accred_proj
+   git clone https://github.com/upo2201/VCred.git
+   cd VCred
    ```
 
 2. **Install Dependencies**
