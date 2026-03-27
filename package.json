@@ -122,8 +122,8 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/upo2201/Accred_proj.git"
+    "url": "git+https://github.com/bhoomiladia/VCred.git"
   },
-  "author": "Aashi Kaur",
+  "author": "Bhoomi Ladia",
   "license": "ISC"
 }
