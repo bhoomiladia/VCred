@@ -94,7 +94,7 @@ export const CertificatePreview = forwardRef<HTMLDivElement, CertificatePreviewP
                 <p>Issued: {formattedDate}</p>
                 <p className="font-mono mt-1 select-all">{(credentialHash || "0x_PREVIEW_HASH_").substring(0, 16)}...</p>
             </div>
-            <QRCodeSVG value={credentialHash || "https://vcred.io/verify/preview"} size={100} level="H" />
+            <QRCodeSVG value={credentialHash || "0xPREVIEW_CREDENTIAL_HASH"} size={100} level="H" />
         </div>
       </div>
     )
@@ -118,7 +118,7 @@ export const CertificatePreview = forwardRef<HTMLDivElement, CertificatePreviewP
         <div className="mt-auto w-full flex justify-between items-end pb-8 px-12">
             <div className="text-center w-32 border-t border-slate-400 pt-2 text-sm italic">Registrar</div>
             <div className="flex flex-col items-center">
-                <QRCodeSVG value={credentialHash || "https://vcred.io/"} size={90} fgColor="#78350f" />
+                <QRCodeSVG value={credentialHash || "0xPREVIEW_CREDENTIAL_HASH"} size={90} fgColor="#78350f" />
                 <p className="text-[10px] uppercase tracking-widest text-slate-400 mt-2 font-sans flex flex-col items-center gap-1">
                   <span>Verified Credentials</span>
                 </p>
@@ -142,7 +142,7 @@ export const CertificatePreview = forwardRef<HTMLDivElement, CertificatePreviewP
                     <p className="text-slate-400 text-sm mt-2 tracking-widest uppercase">Verified Web3 Credential</p>
                 </div>
                 <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/10">
-                    <QRCodeSVG value={credentialHash || "https://vcred.io"} size={80} bgColor="transparent" fgColor="#fff" level="H" />
+                    <QRCodeSVG value={credentialHash || "0xPREVIEW_CREDENTIAL_HASH"} size={80} bgColor="transparent" fgColor="#fff" level="H" />
                 </div>
             </div>
 
@@ -215,7 +215,7 @@ export const CertificatePreview = forwardRef<HTMLDivElement, CertificatePreviewP
                 </div>
                 <div className="flex flex-col items-center pb-4">
                     <div className="p-2 border-2 border-[#6b2525] rounded bg-white">
-                        <QRCodeSVG value={credentialHash || "https://vcred.io"} size={80} fgColor="#6b2525" />
+                        <QRCodeSVG value={credentialHash || "0xPREVIEW_CREDENTIAL_HASH"} size={80} fgColor="#6b2525" />
                     </div>
                 </div>
                 <div className="text-center w-40">

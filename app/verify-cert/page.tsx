@@ -267,9 +267,8 @@ export default function VerifyCertPage() {
             </div>
 
             {/* Comparison Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <DataCard title="Student Name" extracted={result.ocrResult.name} expected={result.officialRecord.name} mismatch={result.mismatches.some((m: any) => m.field === 'Student Name')} />
-              <DataCard title="Roll Number" extracted={result.ocrResult.rollNumber} expected={result.officialRecord.rollNumber} mismatch={result.mismatches.some((m: any) => m.field === 'Roll Number')} />
               <DataCard title="CGPA" extracted={result.ocrResult.cgpa} expected={result.officialRecord.cgpa} mismatch={result.mismatches.some((m: any) => m.field === 'CGPA')} />
             </div>
 

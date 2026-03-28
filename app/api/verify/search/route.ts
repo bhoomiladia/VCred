@@ -28,7 +28,12 @@ export async function GET(request: Request) {
     }
 
     // Tamper check
-    const dataString = `${credential.name}${credential.rollNumber}${credential.degreeTitle}${credential.cgpa}`;
+    const dataString =
+      credential.name +
+      credential.rollNumber +
+      credential.degreeTitle +
+      credential.cgpa +
+      (credential.institutionName || '');
     const calculatedHash = `0x${crypto.createHash('sha256').update(Buffer.from(dataString)).digest('hex')}`;
     const dbTampered = credential.credentialHash
       ? calculatedHash !== credential.credentialHash

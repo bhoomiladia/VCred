@@ -92,7 +92,12 @@ export async function POST(request: Request) {
       };
 
       // Secondary Check: If the DB record itself is tampered (Hash mismatch in DB)
-      const dataString = `${credential.name}${credential.rollNumber}${credential.degreeTitle}${credential.cgpa}`;
+      const dataString =
+        credential.name +
+        credential.rollNumber +
+        credential.degreeTitle +
+        credential.cgpa +
+        (credential.institutionName || '');
       const calculatedHash = `0x${crypto.createHash('sha256').update(Buffer.from(dataString)).digest('hex')}`;
       dbTampered = credential.credentialHash ? calculatedHash !== credential.credentialHash : false;
     }
@@ -100,15 +105,15 @@ export async function POST(request: Request) {
     // 3. Compare data
     const mismatches: { field: string; expected: any; actual: any }[] = [];
 
-    // Name comparison (case-insensitive, basic normalization)
-    if (ocrResult.name.toLowerCase().trim() !== expected.name.toLowerCase().trim()) {
+    // Helper to normalize strings for OCR comparison (remove all spaces and convert to lowercase)
+    const normalizeStr = (str: any) => String(str || '').replace(/\s+/g, '').toLowerCase();
+
+    // Name comparison
+    if (normalizeStr(ocrResult.name) !== normalizeStr(expected.name)) {
       mismatches.push({ field: 'Student Name', expected: expected.name, actual: ocrResult.name });
     }
 
-    // Roll number comparison
-    if (ocrResult.rollNumber.toLowerCase().trim() !== expected.rollNumber.toLowerCase().trim()) {
-      mismatches.push({ field: 'Roll Number', expected: expected.rollNumber, actual: ocrResult.rollNumber });
-    }
+
 
     // CGPA comparison (allowing small floating point difference)
     if (Math.abs(ocrResult.cgpa - expected.cgpa) > 0.01) {

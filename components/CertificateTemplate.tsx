@@ -33,8 +33,7 @@ export const CertificateTemplate = forwardRef<HTMLDivElement, CertificateProps>(
     day: 'numeric'
   });
 
-  // Verification URL that the QR code points to
-  const verifyUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://vcred.io'}/verify/${credentialHash}?name=${encodeURIComponent(studentName)}&roll=${encodeURIComponent(rollNumber)}&cgpa=${cgpa}`;
+  // The QR code now points directly to the credentialHash instead of a full URL
 
   return (
     <div 
@@ -156,7 +155,7 @@ export const CertificateTemplate = forwardRef<HTMLDivElement, CertificateProps>(
             {/* QR Code */}
             <div className="flex flex-col items-center border border-slate-200 p-2 bg-slate-50">
               <QRCodeSVG 
-                value={verifyUrl}
+                value={credentialHash}
                 size={96}
                 level="H"
                 includeMargin={false}

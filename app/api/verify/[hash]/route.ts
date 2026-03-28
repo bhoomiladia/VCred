@@ -30,7 +30,7 @@ export async function GET(
       credential.degreeTitle + 
       credential.cgpa + 
       (credential.institutionName || "");
-    const calculatedHash = `0x${crypto.createHash('sha256').update(dataString).digest('hex')}`;
+    const calculatedHash = `0x${crypto.createHash('sha256').update(Buffer.from(dataString)).digest('hex')}`;
     
     // Live lookup of institution name
     let instUser = null;
