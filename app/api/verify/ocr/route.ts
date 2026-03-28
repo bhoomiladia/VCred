@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import { extractFromImage } from '@/lib/ocr';
 import Degree from '@/models/Degree';
-import crypto from 'crypto';
+import { computeLeaf } from '@/lib/merkle';
 
 export async function POST(request: Request) {
   try {
@@ -19,41 +19,65 @@ export async function POST(request: Request) {
     const ocrResult = await extractFromImage(buffer);
 
     if (!ocrResult || (!ocrResult.rollNumber && !ocrResult.name)) {
-      return NextResponse.json({ error: 'Could not extract data from certificate' }, { status: 404 });
+      return NextResponse.json({ 
+        error: 'Could not extract data from certificate. Try a higher resolution scan.',
+        ocrResult: ocrResult || null,
+      }, { status: 422 });
     }
 
     await connectDB();
 
-    // Strategy 1: Look for roll number
+    // Multi-strategy DB lookup
     let credential = null;
+
+    // Strategy 1: Look for roll number (most reliable)
     if (ocrResult.rollNumber) {
       credential = await Degree.findOne({
         rollNumber: { $regex: new RegExp(`^${ocrResult.rollNumber.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
       }).lean();
     }
 
-    // Strategy 2: Look for name (if roll number fails)
+    // Strategy 2: Look for name
     if (!credential && ocrResult.name) {
       credential = await Degree.findOne({
         name: { $regex: new RegExp(`^${ocrResult.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
       }).lean();
     }
 
+    // Strategy 3: Fuzzy name match (first + last name)
+    if (!credential && ocrResult.name) {
+      const nameParts = ocrResult.name.trim().split(/\s+/);
+      if (nameParts.length >= 2) {
+        const firstName = nameParts[0];
+        const lastName = nameParts[nameParts.length - 1];
+        credential = await Degree.findOne({
+          name: { $regex: new RegExp(`${firstName}.*${lastName}`, 'i') }
+        }).lean();
+      }
+    }
+
     if (!credential) {
       return NextResponse.json({ 
         error: 'Credential not found in registry', 
-        ocrFound: ocrResult 
+        ocrResult: {
+          name: ocrResult.name,
+          rollNumber: ocrResult.rollNumber,
+          cgpa: ocrResult.cgpa,
+          degreeTitle: ocrResult.degreeTitle,
+          confidence: ocrResult.confidence,
+        }
       }, { status: 404 });
     }
 
-    // Tamper check
-    const dataString =
-      credential.name +
-      credential.rollNumber +
-      credential.degreeTitle +
-      credential.cgpa +
-      (credential.institutionName || '');
-    const calculatedHash = `0x${crypto.createHash('sha256').update(Buffer.from(dataString)).digest('hex')}`;
+    // Tamper check using the canonical computeLeaf
+    const calculatedHash = '0x' + computeLeaf({
+      name: credential.name,
+      rollNumber: credential.rollNumber,
+      degreeTitle: credential.degreeTitle,
+      cgpa: credential.cgpa,
+      institutionName: credential.institutionName || '',
+    }).toString('hex');
+
     const dbTampered = credential.credentialHash
       ? calculatedHash !== credential.credentialHash
       : false;
@@ -63,7 +87,17 @@ export async function POST(request: Request) {
         ...credential,
         dbTampered,
       },
-      ocrResult
+      ocrResult: {
+        name: ocrResult.name,
+        rollNumber: ocrResult.rollNumber,
+        cgpa: ocrResult.cgpa,
+        degreeTitle: ocrResult.degreeTitle,
+        branch: ocrResult.branch,
+        institutionName: ocrResult.institutionName,
+        confidence: ocrResult.confidence,
+        filterUsed: ocrResult.filterUsed,
+        needsReview: ocrResult.needsReview,
+      }
     });
 
   } catch (error) {

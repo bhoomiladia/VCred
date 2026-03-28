@@ -238,8 +238,11 @@ export default function LandingPage() {
           </Link>
 
           <nav className="hidden items-center gap-12 md:flex">
+            <Link href="/verify" className="text-xs font-bold text-zinc-400 transition-colors hover:text-white uppercase tracking-[0.3em]">
+              Verify Hash
+            </Link>
             <Link href="/verify-cert" className="text-xs font-bold text-zinc-400 transition-colors hover:text-white uppercase tracking-[0.3em]">
-              Verify
+              Verify Cert
             </Link>
             {user && (
               <Link href={`/dashboard/${user.role}`} className="text-xs font-bold text-zinc-400 transition-colors hover:text-white uppercase tracking-[0.3em]">

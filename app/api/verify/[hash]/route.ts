@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Degree from '@/models/Degree';
 import User from '@/models/User';
-import crypto from 'crypto';
+import { computeLeaf } from '@/lib/merkle';
 
 export async function GET(
   request: Request,
@@ -24,13 +24,14 @@ export async function GET(
       return NextResponse.json({ error: 'Credential not found in registry' }, { status: 404 });
     }
 
-    const dataString = 
-      credential.name + 
-      credential.rollNumber + 
-      credential.degreeTitle + 
-      credential.cgpa + 
-      (credential.institutionName || "");
-    const calculatedHash = `0x${crypto.createHash('sha256').update(Buffer.from(dataString)).digest('hex')}`;
+    // Tamper check using canonical computeLeaf
+    const calculatedHash = '0x' + computeLeaf({
+      name: credential.name,
+      rollNumber: credential.rollNumber,
+      degreeTitle: credential.degreeTitle,
+      cgpa: credential.cgpa,
+      institutionName: credential.institutionName || '',
+    }).toString('hex');
     
     // Live lookup of institution name
     let instUser = null;

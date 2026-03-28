@@ -461,6 +461,14 @@ export default function VerifyPage() {
           <p className="mt-2 text-muted-foreground">
             Verify academic credentials against our Merkle Root registry
           </p>
+          <div className="mt-4 flex justify-center gap-3">
+            <Link href="/verify-cert">
+              <Button variant="outline" className="gap-2 rounded-full border-primary/30 hover:bg-primary/10">
+                <Scan className="h-4 w-4" />
+                Verify Certificate (OCR)
+              </Button>
+            </Link>
+          </div>
         </motion.div>
 
         {/* Mode Tabs */}

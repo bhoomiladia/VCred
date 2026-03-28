@@ -1,12 +1,6 @@
-import os from 'os';
-import path from 'path';
-import fs from 'fs/promises';
 import { createWorker } from "tesseract.js";
 import Groq from "groq-sdk";
 import { FILTER_PIPELINE, resizeForOcr } from "./image-preprocessing";
-
-// Apryse Node.js SDK
-const { PDFNet } = require('@pdftron/pdfnet-node');
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -14,6 +8,9 @@ export interface OcrResult {
   name: string;
   rollNumber: string;
   cgpa: number;
+  degreeTitle: string;
+  branch: string;
+  institutionName: string;
   confidence: number;
   rawText: string;
   filterUsed: string;
@@ -28,44 +25,133 @@ export interface OcrOptions {
 
 // ── Groq LLM Data Extraction ──────────────────────────────────────────────────
 
-async function extractStudentData(text: string): Promise<{ name: string; rollNumber: string; cgpa: number }> {
-  if (!process.env.GROQ_API_KEY || !text.trim()) {
-    return { name: "", rollNumber: "", cgpa: 0 };
-  }
-
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-  const prompt = `
-    Extract from transcript text: 1. Student Name, 2. Roll Number, 3. CGPA (out of 10).
-    Return ONLY raw JSON: {"name": "string", "rollNumber": "string", "cgpa": number}.
-    If not found, use "" or 0.
-    Text: """${text}"""
-  `;
-
-  try {
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
-      model: "llama-3.1-8b-instant",
-      temperature: 0,
-      response_format: { type: "json_object" }
-    });
-
-    const data = JSON.parse(chatCompletion.choices[0]?.message?.content || "{}");
-    return {
-      name: data.name || "",
-      rollNumber: data.rollNumber || "",
-      cgpa: parseFloat(data.cgpa) || 0
-    };
-  } catch (error) {
-    console.error("Groq Extraction Error:", error);
-    return { name: "", rollNumber: "", cgpa: 0 };
-  }
+interface ExtractedData {
+  name: string;
+  rollNumber: string;
+  cgpa: number;
+  degreeTitle: string;
+  branch: string;
+  institutionName: string;
 }
 
-function extractionQuality(data: { name: string; rollNumber: string; cgpa: number }): number {
+async function extractStudentData(text: string): Promise<ExtractedData> {
+  const empty: ExtractedData = { name: "", rollNumber: "", cgpa: 0, degreeTitle: "", branch: "", institutionName: "" };
+  if (!text.trim()) return empty;
+
+  // Try Groq LLM first, then regex fallback
+  if (process.env.GROQ_API_KEY) {
+    try {
+      const result = await extractWithGroq(text);
+      if (result.name || result.rollNumber) return result;
+    } catch (error) {
+      console.error("Groq Extraction Error (falling back to regex):", error);
+    }
+  }
+
+  // Regex fallback
+  return extractWithRegex(text);
+}
+
+async function extractWithGroq(text: string): Promise<ExtractedData> {
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  const prompt = `You are extracting student credential information from a certificate or transcript.
+Extract these fields from the text below:
+1. Student Name (full name of the student)
+2. Roll Number / Registration Number / Enrollment Number
+3. CGPA or GPA (numeric, out of 10 scale. Convert from 4-point scale if needed)
+4. Degree Title (e.g. "B.Tech in Computer Science", "Master of Business Administration")
+5. Branch / Department / Major (e.g. "Computer Science", "Mechanical Engineering")  
+6. Institution Name (name of the university or college)
+
+Return ONLY a raw JSON object: {"name": "string", "rollNumber": "string", "cgpa": number, "degreeTitle": "string", "branch": "string", "institutionName": "string"}
+If a field cannot be found, use "" for strings or 0 for numbers.
+Do NOT wrap in markdown code blocks.
+
+Text:
+"""${text.slice(0, 3000)}"""`;
+
+  const chatCompletion = await groq.chat.completions.create({
+    messages: [{ role: "user", content: prompt }],
+    model: "llama-3.1-8b-instant",
+    temperature: 0,
+    response_format: { type: "json_object" }
+  });
+
+  const raw = chatCompletion.choices[0]?.message?.content || "{}";
+  const data = JSON.parse(raw);
+  return {
+    name: String(data.name || "").trim(),
+    rollNumber: String(data.rollNumber || data.roll_number || data.registrationNumber || "").trim(),
+    cgpa: parseFloat(data.cgpa || data.gpa) || 0,
+    degreeTitle: String(data.degreeTitle || data.degree_title || data.degree || "").trim(),
+    branch: String(data.branch || data.department || data.major || "").trim(),
+    institutionName: String(data.institutionName || data.institution_name || data.university || "").trim(),
+  };
+}
+
+function extractWithRegex(text: string): ExtractedData {
+  const result: ExtractedData = { name: "", rollNumber: "", cgpa: 0, degreeTitle: "", branch: "", institutionName: "" };
+
+  // Name patterns
+  const namePatterns = [
+    /(?:student\s*name|name\s*of\s*(?:the\s*)?student|candidate\s*name|name)\s*[:\-–]?\s*([A-Z][a-zA-Z\s.'-]{2,40})/i,
+    /(?:this\s+is\s+to\s+certify\s+that|awarded\s+to|presented\s+to|conferred\s+upon)\s+([A-Z][a-zA-Z\s.'-]{2,40})/i,
+  ];
+  for (const p of namePatterns) {
+    const m = text.match(p);
+    if (m?.[1]) { result.name = m[1].trim(); break; }
+  }
+
+  // Roll number patterns
+  const rollPatterns = [
+    /(?:roll\s*(?:no|number|#)|registration\s*(?:no|number)|enrollment\s*(?:no|number)|reg\.?\s*no)\s*[:\-–]?\s*([A-Z0-9][\w\-\/]{3,20})/i,
+    /\b([A-Z]{2,4}\d{4,}[A-Z]?\d{0,3})\b/,  // common roll number format like CS2024001
+  ];
+  for (const p of rollPatterns) {
+    const m = text.match(p);
+    if (m?.[1]) { result.rollNumber = m[1].trim(); break; }
+  }
+
+  // CGPA patterns
+  const cgpaPatterns = [
+    /(?:CGPA|C\.G\.P\.A|GPA|cumulative\s*grade)\s*[:\-–]?\s*(\d+\.?\d*)\s*(?:\/\s*10)?/i,
+    /(\d\.\d{1,2})\s*(?:\/\s*10|out\s*of\s*10|on\s*a?\s*10)/i,
+  ];
+  for (const p of cgpaPatterns) {
+    const m = text.match(p);
+    if (m?.[1]) { result.cgpa = parseFloat(m[1]) || 0; break; }
+  }
+
+  // Degree title patterns
+  const degreePatterns = [
+    /(?:degree|programme|program|course)\s*[:\-–]?\s*([A-Z][A-Za-z\s.()]{3,60})/i,
+    /\b(B\.?\s*Tech|M\.?\s*Tech|B\.?\s*E|M\.?\s*E|B\.?\s*Sc|M\.?\s*Sc|B\.?\s*A|M\.?\s*A|B\.?\s*Com|M\.?\s*Com|MBA|BBA|PhD|B\.?\s*Arch|M\.?\s*Arch)[\w\s.()]*(?:in\s+[\w\s()]+)?/i,
+  ];
+  for (const p of degreePatterns) {
+    const m = text.match(p);
+    if (m?.[0]) { result.degreeTitle = m[0].trim(); break; }
+  }
+
+  // Institution patterns
+  const instPatterns = [
+    /(?:university|institute|college|school)\s*(?:of)?\s*([A-Z][\w\s,&'-]{3,60})/i,
+    /([A-Z][\w\s]{3,40}(?:University|Institute|College|School))/i,
+  ];
+  for (const p of instPatterns) {
+    const m = text.match(p);
+    if (m?.[0]) { result.institutionName = m[0].trim(); break; }
+  }
+
+  return result;
+}
+
+function extractionQuality(data: ExtractedData): number {
   let score = 100;
   if (!data.name || data.name.length < 3) score -= 40;
   if (!data.rollNumber || data.rollNumber.length < 4) score -= 40;
-  if (data.cgpa === 0) score -= 20;
+  if (data.cgpa === 0) score -= 10;
+  if (!data.degreeTitle) score -= 5;
+  if (!data.institutionName) score -= 5;
   return score;
 }
 
@@ -107,101 +193,96 @@ async function performOcrWithRetry(
         bestResult = currentResult;
       }
 
-      if (combined >= 85 && extracted.cgpa > 0) break;
+      // Good enough — stop early
+      if (combined >= 85 && extracted.name && extracted.rollNumber) break;
     }
   } finally {
     await worker.terminate();
   }
 
   return bestResult || {
-    name: "", rollNumber: "", cgpa: 0, confidence: 0,
-    rawText: "", filterUsed: "failed", needsReview: true, attempts: maxRetries
+    name: "", rollNumber: "", cgpa: 0, degreeTitle: "", branch: "", institutionName: "",
+    confidence: 0, rawText: "", filterUsed: "failed", needsReview: true, attempts: maxRetries
   };
 }
 
-// ── Main Entry Point using Apryse (PDFTron) ───────────────────────────────────
+// ── PDF to Text Extraction ────────────────────────────────────────────────────
 
 function isPdf(buffer: Buffer): boolean {
   return buffer.length > 4 && buffer.slice(0, 4).toString() === "%PDF";
 }
 
+async function extractTextFromPdf(buffer: Buffer): Promise<string> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const pdfParse = require('pdf-parse');
+    const data = await pdfParse(buffer);
+    return data.text || "";
+  } catch (error) {
+    console.error("pdf-parse extraction error:", error);
+    return "";
+  }
+}
+
+// ── Main Entry Point ──────────────────────────────────────────────────────────
+
 export async function extractFromImage(
   buffer: Buffer,
   options: OcrOptions = {},
 ): Promise<OcrResult> {
-  // If it's a standard Image (JPG, PNG)
+  // ── Standard Image (JPG, PNG) ──
   if (!isPdf(buffer)) {
     return await performOcrWithRetry(buffer, options);
   }
 
-  // ── Apryse PDF Extraction Workflow ──
-  let finalResult: OcrResult | null = null;
-
-  const runApryseExtraction = async () => {
-    // Apryse automatically reads standard PDF formats from buffers
-    const doc = await PDFNet.PDFDoc.createFromBuffer(buffer);
-    doc.initSecurityHandler();
-
-    const pageCount = await doc.getPageCount();
-    if (pageCount === 0) throw new Error("PDF has no pages.");
-
-    const page = await doc.getPage(1); // Read only the first page
-
-    // Strategy A: Try to extract digital text first using Apryse TextExtractor
-    const txt = await PDFNet.TextExtractor.create();
-    txt.begin(page);
-    const digitalText = await txt.getAsText();
-
-    // If we extracted a decent amount of text, parse it with Groq
-    if (digitalText && digitalText.trim().length > 50) {
-      const extracted = await extractStudentData(digitalText);
-      if (extractionQuality(extracted) >= 75) {
-        finalResult = {
-          ...extracted,
-          confidence: 99,
-          rawText: digitalText,
-          filterUsed: "apryse-textextractor (digital)",
-          needsReview: false,
-          attempts: 1,
-        };
-        return; // Success, exit the Apryse block early
-      }
+  // ── PDF Processing ──
+  // Strategy A: Try digital text extraction first
+  const digitalText = await extractTextFromPdf(buffer);
+  
+  if (digitalText && digitalText.trim().length > 50) {
+    const extracted = await extractStudentData(digitalText);
+    if (extractionQuality(extracted) >= 60) {
+      return {
+        ...extracted,
+        confidence: 95,
+        rawText: digitalText,
+        filterUsed: "pdf-parse (digital)",
+        needsReview: extractionQuality(extracted) < 75,
+        attempts: 1,
+      };
     }
-
-    console.log("Digital extraction empty or low quality, rasterizing with Apryse...");
-
-    // Strategy B: If scanned PDF, use PDFDraw to rasterize the page
-    const pdfDraw = await PDFNet.PDFDraw.create();
-    await pdfDraw.setDPI(250); // High DPI setting for crisp OCR reading
-
-    // Save to temp file since Apryse Export interacts best with the Node.js File System
-    const tmpFilePath = path.join(os.tmpdir(), `apryse-raster-${Date.now()}.png`);
-    await pdfDraw.export(page, tmpFilePath, "PNG");
-
-    // Read the generated high-quality image back into a standard Buffer
-    const imageBuffer = await fs.readFile(tmpFilePath);
-
-    // Cleanup the temp file immediately to avoid filling up the server
-    await fs.unlink(tmpFilePath).catch(() => { });
-
-    // Run our standard Tesseract OCR on the newly rasterized PDF image
-    finalResult = await performOcrWithRetry(imageBuffer, options);
-  };
-
-  try {
-    // runWithCleanup automatically frees C++ memory efficiently. 
-    // The second parameter is the license key. An empty string runs it in Demo/Trial mode.
-    await PDFNet.runWithCleanup(runApryseExtraction, process.env.APRYSE_LICENSE_KEY || "");
-  } catch (error) {
-    console.error("Apryse PDF Processing Error:", error);
-    return {
-      name: "", rollNumber: "", cgpa: 0, confidence: 0,
-      rawText: "", filterUsed: "apryse-failed", needsReview: true, attempts: 1
-    };
   }
 
-  return finalResult || {
-    name: "", rollNumber: "", cgpa: 0, confidence: 0,
-    rawText: "", filterUsed: "apryse-failed", needsReview: true, attempts: 1
-  };
+  // Strategy B: Rasterize first page and run Tesseract OCR
+  console.log("Digital extraction empty or low quality, attempting PDF rasterization...");
+  
+  try {
+    // Use sharp to attempt to read the PDF as an image (works for single-page PDFs)
+    const sharp = (await import('sharp')).default;
+    const imageBuffer = await sharp(buffer, { density: 250, pages: 1 })
+      .png()
+      .toBuffer();
+
+    return await performOcrWithRetry(imageBuffer, options);
+  } catch (rasterError) {
+    console.error("PDF rasterization failed:", rasterError);
+
+    // Strategy C: If we got any digital text at all, try to use it with lower threshold
+    if (digitalText && digitalText.trim().length > 10) {
+      const extracted = await extractStudentData(digitalText);
+      return {
+        ...extracted,
+        confidence: 50,
+        rawText: digitalText,
+        filterUsed: "pdf-parse (low-quality fallback)",
+        needsReview: true,
+        attempts: 1,
+      };
+    }
+
+    return {
+      name: "", rollNumber: "", cgpa: 0, degreeTitle: "", branch: "", institutionName: "",
+      confidence: 0, rawText: "", filterUsed: "pdf-failed", needsReview: true, attempts: 1
+    };
+  }
 }

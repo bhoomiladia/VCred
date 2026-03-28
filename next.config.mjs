@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ['tesseract.js', 'sharp', 'pdf-parse', '@pdftron/pdfnet-node'],
+  serverExternalPackages: ['tesseract.js', 'sharp', 'pdf-parse'],
   outputFileTracingIncludes: {
     '/api/**/*': [
       './node_modules/tesseract.js/**/*',

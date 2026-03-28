@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Degree from '@/models/Degree';
-import crypto from 'crypto';
+import { computeLeaf } from '@/lib/merkle';
 
 interface BatchEntry {
   credentialHash?: string;
@@ -139,14 +139,14 @@ export async function POST(request: Request) {
           // Field-by-field comparison
           const mismatches = compareFields(entry, credential);
 
-          // Tamper check: recalculate hash
-          const dataString =
-            credential.name +
-            credential.rollNumber +
-            credential.degreeTitle +
-            credential.cgpa +
-            (credential.institutionName || '');
-          const calculatedHash = `0x${crypto.createHash('sha256').update(Buffer.from(dataString)).digest('hex')}`;
+          // Tamper check: recalculate hash using canonical computeLeaf
+          const calculatedHash = '0x' + computeLeaf({
+            name: credential.name,
+            rollNumber: credential.rollNumber,
+            degreeTitle: credential.degreeTitle,
+            cgpa: credential.cgpa,
+            institutionName: credential.institutionName || '',
+          }).toString('hex');
           const dbTampered = credential.credentialHash
             ? calculatedHash !== credential.credentialHash
             : false;

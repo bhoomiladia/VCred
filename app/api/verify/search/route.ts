@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Degree from '@/models/Degree';
-import crypto from 'crypto';
+import { computeLeaf } from '@/lib/merkle';
 
 export async function GET(request: Request) {
   try {
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
 
     let credential = null;
 
-    // Strategy 1: Credential Hash lookup only
+    // Strategy 1: Credential Hash lookup
     const normalizedHash = query.startsWith('0x') ? query : `0x${query}`;
     const rawHash = normalizedHash.replace('0x', '');
     
@@ -27,14 +27,15 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Credential not found in registry' }, { status: 404 });
     }
 
-    // Tamper check
-    const dataString =
-      credential.name +
-      credential.rollNumber +
-      credential.degreeTitle +
-      credential.cgpa +
-      (credential.institutionName || '');
-    const calculatedHash = `0x${crypto.createHash('sha256').update(Buffer.from(dataString)).digest('hex')}`;
+    // Tamper check using canonical computeLeaf
+    const calculatedHash = '0x' + computeLeaf({
+      name: credential.name,
+      rollNumber: credential.rollNumber,
+      degreeTitle: credential.degreeTitle,
+      cgpa: credential.cgpa,
+      institutionName: credential.institutionName || '',
+    }).toString('hex');
+
     const dbTampered = credential.credentialHash
       ? calculatedHash !== credential.credentialHash
       : false;

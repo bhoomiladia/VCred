@@ -79,7 +79,7 @@ export default function VerifyCertPage() {
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!file || !hash) return
+    if (!file) return
 
     setIsVerifying(true)
     setResult(null)
@@ -87,7 +87,9 @@ export default function VerifyCertPage() {
 
     const formData = new FormData()
     formData.append("file", file)
-    formData.append("hash", hash)
+    if (hash.trim()) {
+      formData.append("hash", hash.trim())
+    }
 
     try {
       const res = await fetch("/api/verify/compare", {
@@ -127,8 +129,9 @@ export default function VerifyCertPage() {
       <header className="border-b border-zinc-900/80 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto h-16 flex items-center justify-between px-6">
           <div className="flex items-center gap-4">
-            <Link href="/verify" className="text-zinc-500 hover:text-white transition-colors">
+            <Link href="/verify" className="text-zinc-500 hover:text-white transition-colors flex items-center gap-2">
               <ArrowLeft className="h-5 w-5" />
+              <span className="text-sm hidden sm:inline">Verify Portal</span>
             </Link>
             <div className="h-4 w-[1px] bg-zinc-800" />
             <div className="flex items-center gap-3">
@@ -137,6 +140,12 @@ export default function VerifyCertPage() {
               <span className="font-bold tracking-widest text-sm text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-md ml-2">COMPARE</span>
             </div>
           </div>
+          <Link href="/verify">
+            <Button variant="outline" size="sm" className="border-zinc-800 hover:bg-zinc-900 text-zinc-300 gap-2">
+              <Search className="h-4 w-4" />
+              <span className="hidden sm:inline">Hash Verify</span>
+            </Button>
+          </Link>
         </div>
       </header>
 
@@ -146,7 +155,7 @@ export default function VerifyCertPage() {
             Certificate Authenticator
           </h1>
           <p className="text-zinc-400 max-w-lg mx-auto">
-            Upload a physical scan or digital certificate to compare it against the immutable blockchain registry.
+            Upload a physical scan or digital certificate to compare it against the immutable blockchain registry. Hash is optional — we'll auto-detect the student.
           </p>
         </div>
 
@@ -182,19 +191,21 @@ export default function VerifyCertPage() {
               )}
             </div>
 
-            {/* Reference Input */}
+            {/* Reference Input (Optional) */}
             <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-3xl p-8">
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-emerald-500/10 rounded-lg">
                   <Fingerprint className="h-5 w-5 text-emerald-500" />
                 </div>
                 <h2 className="font-bold text-zinc-200">Reference Source</h2>
+                <span className="text-[10px] text-zinc-600 font-mono bg-zinc-800 px-2 py-0.5 rounded-full">OPTIONAL</span>
               </div>
+              <p className="text-[11px] text-zinc-500 mb-4 ml-12">Leave blank to auto-detect the student from the certificate via OCR.</p>
 
               <div className="space-y-4">
                 <div className="relative">
                   <Input
-                    placeholder="Enter Credential Hash or Paste Verification Link"
+                    placeholder="Enter Credential Hash or Paste Verification Link (optional)"
                     value={hash}
                     onChange={(e) => setHash(e.target.value)}
                     className="bg-black border-zinc-800 h-14 pl-12 rounded-2xl focus-visible:ring-emerald-500/50 transition-all font-mono text-sm"
@@ -205,7 +216,7 @@ export default function VerifyCertPage() {
                 </div>
                 {qrScanning && <p className="text-[10px] text-emerald-500 font-mono animate-pulse">Scanning image for QR code...</p>}
                 {!hash && file && file.type.startsWith("image/") && !qrScanning && (
-                  <p className="text-[10px] text-zinc-500 font-mono">No QR code auto-detected. Please enter the hash manually.</p>
+                  <p className="text-[10px] text-zinc-500 font-mono">No QR code auto-detected. You may enter a hash manually, or leave blank for OCR-based lookup.</p>
                 )}
               </div>
             </div>
@@ -227,7 +238,7 @@ export default function VerifyCertPage() {
             
             {error && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm flex items-center gap-3">
-                <XCircle className="h-5 w-5" />
+                <XCircle className="h-5 w-5 shrink-0" />
                 {error}
               </motion.div>
             )}
@@ -268,9 +279,35 @@ export default function VerifyCertPage() {
 
             {/* Comparison Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DataCard title="Student Name" extracted={result.ocrResult.name} expected={result.officialRecord.name} mismatch={result.mismatches.some((m: any) => m.field === 'Student Name')} />
-              <DataCard title="CGPA" extracted={result.ocrResult.cgpa} expected={result.officialRecord.cgpa} mismatch={result.mismatches.some((m: any) => m.field === 'CGPA')} />
+              <DataCard title="Student Name" extracted={result.ocrResult?.name} expected={result.officialRecord?.name} mismatch={result.mismatches?.some((m: any) => m.field === 'Student Name')} />
+              <DataCard title="CGPA" extracted={result.ocrResult?.cgpa} expected={result.officialRecord?.cgpa} mismatch={result.mismatches?.some((m: any) => m.field === 'CGPA')} />
+              {result.ocrResult?.rollNumber && (
+                <DataCard title="Roll Number" extracted={result.ocrResult?.rollNumber} expected={result.officialRecord?.rollNumber} mismatch={result.mismatches?.some((m: any) => m.field === 'Roll Number')} />
+              )}
+              {result.ocrResult?.degreeTitle && (
+                <DataCard title="Degree" extracted={result.ocrResult?.degreeTitle} expected={result.officialRecord?.degreeTitle} mismatch={false} />
+              )}
             </div>
+
+            {/* Mismatches */}
+            {result.mismatches && result.mismatches.length > 0 && (
+              <div className="bg-amber-500/5 border border-amber-500/20 rounded-3xl p-8">
+                <h3 className="text-sm font-black tracking-widest text-amber-500 uppercase mb-4 flex items-center gap-3">
+                  <AlertTriangle className="h-4 w-4" /> Field Mismatches
+                </h3>
+                <div className="space-y-3">
+                  {result.mismatches.map((m: any, i: number) => (
+                    <div key={i} className="flex justify-between items-center py-3 border-b border-zinc-800/50 last:border-0">
+                      <span className="text-sm text-zinc-400 capitalize">{m.field}</span>
+                      <div className="text-right">
+                        <p className="text-xs text-red-400 font-mono">OCR: {String(m.actual)}</p>
+                        <p className="text-xs text-emerald-400 font-mono">DB: {String(m.expected)}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Details Table */}
             <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-3xl p-8">
@@ -279,10 +316,10 @@ export default function VerifyCertPage() {
               </h3>
               
               <div className="space-y-6">
-                <DetailRow label="Institution" value={result.officialRecord.institutionName} />
-                <DetailRow label="Degree Title" value={result.officialRecord.degreeTitle} />
-                <DetailRow label="Issuance Proof" value={result.officialRecord.credentialHash} mono />
-                <DetailRow label="OCR Confidence" value={`${(result.ocrResult.confidence).toFixed(2)}%`} />
+                <DetailRow label="Institution" value={result.officialRecord?.institutionName} />
+                <DetailRow label="Degree Title" value={result.officialRecord?.degreeTitle} />
+                <DetailRow label="Issuance Proof" value={result.officialRecord?.credentialHash} mono />
+                <DetailRow label="OCR Confidence" value={result.ocrResult?.confidence ? `${(result.ocrResult.confidence).toFixed(2)}%` : "N/A"} />
               </div>
             </div>
 
@@ -290,11 +327,13 @@ export default function VerifyCertPage() {
               <Button onClick={reset} variant="outline" className="flex-1 h-16 rounded-2xl border-zinc-800 hover:bg-zinc-900">
                 <RefreshCcw className="mr-2 h-5 w-5" /> Verify Another
               </Button>
-              <Link href={`/verify/${result.officialRecord.credentialHash}`} className="flex-1">
-                <Button className="w-full h-16 rounded-2xl bg-zinc-100 hover:bg-white text-black font-bold">
-                  View Public Record
-                </Button>
-              </Link>
+              {result.officialRecord?.credentialHash && (
+                <Link href={`/verify/${result.officialRecord.credentialHash}`} className="flex-1">
+                  <Button className="w-full h-16 rounded-2xl bg-zinc-100 hover:bg-white text-black font-bold">
+                    View Public Record
+                  </Button>
+                </Link>
+              )}
             </div>
           </motion.div>
         )}
@@ -325,7 +364,7 @@ function DetailRow({ label, value, mono }: any) {
   return (
     <div className="flex justify-between items-center gap-8 py-4 border-b border-zinc-800/50 last:border-0">
       <span className="text-xs text-zinc-500">{label}</span>
-      <span className={`text-sm text-zinc-300 text-right truncate ${mono ? "font-mono text-[10px]" : "font-medium"}`}>{value}</span>
+      <span className={`text-sm text-zinc-300 text-right truncate ${mono ? "font-mono text-[10px]" : "font-medium"}`}>{value || "—"}</span>
     </div>
   )
 }
